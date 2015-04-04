@@ -14,7 +14,7 @@ var {
 } = React;
 
 var GameBoard = require('GameBoard');
-var TouchableBounce = require('TouchableBounce');
+var TouchableHighlight = require('TouchableHighlight');
 
 var BOARD_PADDING = 3;
 var CELL_MARGIN = 4;
@@ -49,17 +49,27 @@ class Tile extends React.Component {
     this.state = {
       tile: props.tile
     };
+    props.tile.rerenderTile = this.rerenderTile.bind(this);
+  }
+
+  rerenderTile(tile) {
+    tile.flipped = false;
+
+    console.log('rerenderTile:', tile)
+    this.setState({
+      tile: tile
+    });
   }
 
   onTouch() {
     var board = this.props.board;
     var tile = this.props.tile;
 
+    tile.flip(board);
+
     this.setState({
       tile: tile
     });
-
-    tile.flip(board);
 
     if (board.lastTile) {
       board.resetFlippedTiles();
@@ -99,7 +109,7 @@ class Tile extends React.Component {
   renderTile() {
     var tile = this.state.tile;
     return (
-      <TouchableHighlight onPress={this.onTouch}
+      <TouchableHighlight onPress={this.onTouch.bind(this)}
       activeOpacity={0.6}>
         <View ref="this" style={this.tileStyles}>
           <Text style={this.textStyles}>{tile.value}</Text>
@@ -111,7 +121,8 @@ class Tile extends React.Component {
 
   render() {
     var tile = this.props.tile;
-    if (tile.flipped || tile.matched) {
+    console.log(tile)
+    if (tile.matched || tile.flipped) {
       return this.renderFlipped();
     }
 
@@ -222,6 +233,7 @@ var styles = StyleSheet.create({
   tile: {
     width: CELL_SIZE, 
     height: CELL_SIZE,
+    backgroundColor: '#ddccbb',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',

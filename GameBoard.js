@@ -22,7 +22,6 @@ Tile.prototype.match = function() {
 };
 
 Tile.prototype.flip = function (board?: Object) {
-  console.log('this', this)
   if (this.isMatch(board.lastTile)) {
     board.lastTile.match();
     this.match(); 
@@ -30,10 +29,10 @@ Tile.prototype.flip = function (board?: Object) {
     return true;
   }
 
-  console.log('lastTile', board.lastTile)
+  // console.log('lastTile', board.lastTile)
   board.setLastTile(this);
-
-  return this.flipped = true;
+  this.flipped = true;
+  return this.flipped;
 };
 
 var Board = function () {
@@ -42,7 +41,7 @@ var Board = function () {
   var randomTiles = [];
 
   // Generating the Pair of tiles
-  for (var i = 0; i <= (Board.size * 2); ++i) {
+  for (var i = 1; i <= (Board.size * 2); ++i) {
     for (var ii = 0; ii < 2; ++ii) {
       var tile = this.addTile(i);
       randomTiles.push(tile);
@@ -81,6 +80,7 @@ Board.prototype.resetFlippedTiles = function() {
       if (!tile.matched) {
         tile.flipped = false;
       }
+      tile.rerenderTile(tile);
     }
   }
 };
