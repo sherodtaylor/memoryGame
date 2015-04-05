@@ -33,20 +33,29 @@ Tile.prototype.flip = function (board?: Object, tile?: Object) {
 
   board.setLastTile(tile);
   tile.flipped = true;
-  board.lastTile.flipped = true;
+
+  if (board.lastTile.id) {
+    board.lastTile.flipped = true;
+  }
 
   setTimeout(function() {
-    tile.flipped = false;
-    board.lastTile.flipped = false;
+    if (board.lastTile.id) {
+      board.lastTile.flipped = false;
 
-    board.lastTile.componentRef.setState({
-      tile: board.lastTile
-    });
+      board.lastTile.componentRef.setState({
+        tile: board.lastTile
+      });
+
+    }
+
+    tile.flipped = false;
 
     tile.componentRef.setState({
       tile: tile
     });
-  }, 1000);
+
+    board.setLastTile({});
+  }, 1200);
 
   return this.flipped;
 };
@@ -86,7 +95,7 @@ Board.prototype.addTile = function () {
   return res;
 };
 
-Board.size = 2;
+Board.size = 4;
 
 Board.prototype.setLastTile = function(lastTile?: Object) {
   this.lastTile = lastTile;
