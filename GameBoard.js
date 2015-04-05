@@ -24,17 +24,32 @@ Tile.prototype.match = function() {
   this.matched = true;
 };
 
-Tile.prototype.flip = function (board?: Object) {
-  if (this.isMatch(board.lastTile)) {
+Tile.prototype.flip = function (board?: Object, tile?: Object) {
+  if (tile.isMatch(board.lastTile)) {
     board.lastTile.match();
-    this.match(); 
-    board.setLastTile(null);
+    tile.match(); 
     return true;
   }
 
-  board.setLastTile(this);
-  this.flipped = true;
+  board.setLastTile(tile);
+  tile.flipped = true;
   board.lastTile.flipped = true;
+
+  setTimeout(function() {
+    tile.flipped = false;
+    board.lastTile.flipped = false;
+
+    board.lastTile.componentRef.setState({
+      tile: board.lastTile
+    });
+
+    tile.componentRef.setState({
+      tile: tile
+    });
+    console.log(tile.flipped)
+    console.log('resetting after 1 sec')
+  }, 1000);
+
   return this.flipped;
 };
 
@@ -64,8 +79,6 @@ var Board = function () {
       row.push(randTile);
     }
   }
-
-  this.won = false;
 };
 
 Board.prototype.addTile = function () {
@@ -75,17 +88,6 @@ Board.prototype.addTile = function () {
   return res;
 };
 
-Board.prototype.resetFlippedTiles = function() {
-  for (var i = 0; i < this.cells.length; i++) {
-    var row = this.cells[i];
-    for (var ii = 0; ii < row.length; ii++) {
-      var tile = row[i]
-      tile.flipped = false;
-      tile.rerenderTile(tile);
-    }
-  }
-};
-
 Board.size = 4;
 
 Board.prototype.setLastTile = function(lastTile?: Object) {
@@ -93,8 +95,18 @@ Board.prototype.setLastTile = function(lastTile?: Object) {
   return lastTile;
 };
 
-Board.prototype.hasWon = function () {
-  return this.won;
+Board.prototype.hasWon = function() {
+  var allMatched = true;
+  for (var i = 0; i < this.cells.length; i++) {
+    var row = this.cells[i];
+    for (var ii = 0; ii < row.length; ii++) {
+      if (!row[i].matched) {
+        allMatched = false;
+      }
+    }
+  }
+
+  return allMatched;
 };
 
 //+ Jonas Raoni Soares Silva

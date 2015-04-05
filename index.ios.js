@@ -49,73 +49,76 @@ class Tile extends React.Component {
     this.state = {
       tile: props.tile
     };
-    this.state.tile.rerenderTile = this.rerenderTile.bind(this);
+    this.state.tile.componentRef = this;
   }
 
   rerenderTile(tile) {
     this.setState({
       tile: tile
     });
+    this.state.tile.rerenderTile = this.rerenderTile.bind(this);
   }
 
   onTouch() {
     var board = this.props.board;
     var tile = this.props.tile;
 
-    tile.flip(board);
-
+    tile.flip.call(this, board, tile);
     this.setState({
       tile: tile
     });
 
-    if (board.lastTile) {
-      board.resetFlippedTiles();
+    if (board.hasWon()) {
+      board.openOverlay();
     }
   }
 
   renderFlipped() {
     var tile = this.state.tile;
 
-    this.tileStyles = [
+    var tileStyles = [
       styles.tile,
       styles['flipped' + tile.value]
     ];
 
-    this.textStyles = [
+    var textStyles = [
       styles.whiteText,
       styles.value
     ];
 
-    return this.renderTile();
-  }
-
-  renderInitial() {
-    var tile = this.state.tile;
-
-    this.tileStyles = [
-      styles.tile
-    ];
-
-    this.textStyles = [
-      styles.whiteText,
-      styles.hidden,
-      styles.value
-    ];
-    return this.renderTile();
-  }
-
-  renderTile() {
-    var tile = this.state.tile;
     return (
       <TouchableHighlight onPress={this.onTouch.bind(this)}
       activeOpacity={0.6}>
-        <View style={this.tileStyles}>
-          <Text style={this.textStyles}>{tile.value}</Text>
+        <View style={tileStyles}>
+          <Text style={textStyles}>{tile.value}</Text>
         </View>
       </TouchableHighlight>
     );
   }
 
+  renderInitial() {
+    var tile = this.state.tile;
+
+    var tileStyles = [
+      styles.tile
+    ];
+
+    var textStyles = [
+      styles.whiteText,
+      styles.hidden,
+      styles.value
+    ];
+
+    console.log('I should be unflipped')
+    return (
+      <TouchableHighlight onPress={this.onTouch.bind(this)}
+      activeOpacity={0.6}>
+        <View style={tileStyles}>
+          <Text style={textStyles}>{tile.value}</Text>
+        </View>
+      </TouchableHighlight>
+    );
+  }
 
   render() {
     var tile = this.props.tile;
@@ -123,12 +126,25 @@ class Tile extends React.Component {
     if (tile.matched || tile.flipped) {
       return this.renderFlipped();
     }
-
     return this.renderInitial();
   }
 }
 
 class GameEndOverlay extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      board: props.board
+    };
+    this.state.board = this.openOverlay.bind(this);
+  }
+
+  openOverlay() {
+    this.setState({
+      board: this.state.board
+    })
+  }
+
   render() {
     var board = this.props.board;
 
