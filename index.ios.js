@@ -57,7 +57,7 @@ class Tile extends React.Component {
     var board = this.props.board;
     var tile = this.props.tile;
 
-    tile.flip.call(this, board, tile);
+    tile.flip(board);
     this.setState({
       tile: tile
     });
@@ -102,7 +102,8 @@ class Tile extends React.Component {
   renderTile(tileStyles, textStyles) {
     var tile = this.state.tile;
     return (
-      <TouchableHighlight onPress={this.onTouch.bind(this)}
+      <TouchableHighlight 
+      onPress={this.onTouch.bind(this)}
       activeOpacity={0.6}>
         <View style={tileStyles}>
           <Text style={textStyles}>{tile.value}</Text>
@@ -143,6 +144,11 @@ class GameEndOverlay extends React.Component {
             <Text style={styles.tryAgainText}>Try Again?</Text>
           </View>
         </TouchableBounce>
+        <TouchableBounce onPress={this.props.toughEnough}>
+          <View style={styles.tryAgain}>
+            <Text style={styles.tryAgainText}>Are you tough enough?</Text>
+          </View>
+        </TouchableBounce>
       </View>
     );
   }
@@ -159,6 +165,14 @@ class memoryGame extends React.Component {
 
   restartGame() {
     this.setState({board: new GameBoard()});
+    this.state.board.rerender = this.rerender.bind(this);
+  }
+
+  toughEnough() {
+    var boardSize = this.state.board.size + 2;
+
+    this.setState({board: new GameBoard(boardSize)});
+
     this.state.board.rerender = this.rerender.bind(this);
   }
 
@@ -182,8 +196,8 @@ class memoryGame extends React.Component {
           <Board>
             {rows}
           </Board>
-          <GameEndOverlay board={board} onRestart={() => this.restartGame()} />
         </View>
+        <GameEndOverlay board={board} onRestart={() => this.restartGame()} toughEnough={() => this.toughEnough()} />
       </View>
     );
   }
@@ -204,7 +218,8 @@ var styles = StyleSheet.create({
     textAlign: 'center',
     color: '#000',
     backgroundColor: '#fff',
-    marginBottom: 20
+    marginBottom: 20,
+    fontSize: 20
   },
   overlay: {
     position: 'absolute',
@@ -212,7 +227,7 @@ var styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(221, 221, 221, 0.5)',
+    backgroundColor: 'rgba(221, 221, 221, 0.7)',
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
@@ -226,17 +241,12 @@ var styles = StyleSheet.create({
     backgroundColor: '#887766',
     padding: 20,
     borderRadius: 5,
+    marginBottom: 10
   },
   tryAgainText: {
     color: '#ffffff',
     fontSize: 20,
     fontWeight: '500',
-  },
-  cell: {
-    width: CELL_SIZE,
-    height: CELL_SIZE,
-    borderRadius: 5,
-    margin: CELL_MARGIN,
   },
   row: {
     flexDirection: 'row',
@@ -280,12 +290,6 @@ var styles = StyleSheet.create({
   },
   flipped8: {
     backgroundColor: '#eecc55',
-  },
-  flipped9: {
-    backgroundColor: '#eecc33',
-  },
-  flipped10: {
-    backgroundColor: '#eecc22',
   },
   whiteText: {
     color: '#ffffff',

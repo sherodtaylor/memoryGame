@@ -17,56 +17,63 @@ Tile.prototype.isMatch = function (lastTile?: Object) {
   if (!lastTile) {
     return false;
   }
-  return this.id !== lastTile.id && lastTile.value === this.value ? true : false;
+  return (this.id !== lastTile.id) && (lastTile.value === this.value) ? true : false;
 };
 
 Tile.prototype.match = function() {
   this.matched = true;
 };
 
-Tile.prototype.flip = function (board?: Object, tile?: Object) {
-  if (tile.isMatch(board.lastTile)) {
+Tile.prototype.flip = function(board?: Object) {
+  if (this.isMatch(board.lastTile)) {
     board.lastTile.match();
-    tile.match(); 
+    this.match(); 
     return true;
   }
 
-  board.setLastTile(tile);
-  tile.flipped = true;
+  this.flipped = true;
+  this.resetTile(board);
 
-  if (board.lastTile.id) {
-    board.lastTile.flipped = true;
+  if (!board.lastTile || !board.lastTile.id) {
+    return board.setLastTile(this);
   }
 
-  setTimeout(function() {
-    if (board.lastTile.id) {
-      board.lastTile.flipped = false;
+  board.lastTile.flipped = true;
+  board.setLastTile(this);
 
-      board.lastTile.componentRef.setState({
-        tile: board.lastTile
-      });
+  return this.flipped;
+};
 
-    }
-
+Tile.prototype.resetTile = function(board?: Object) {
+  var tile = this;
+  return setTimeout(function() {
     tile.flipped = false;
 
     tile.componentRef.setState({
       tile: tile
     });
 
+    if (board.lastTile.id) {
+      board.lastTile.flipped = false;
+
+      board.lastTile.componentRef.setState({
+        tile: board.lastTile
+      });
+    }
+
     board.setLastTile({});
   }, 1200);
-
-  return this.flipped;
 };
 
-var Board = function () {
+var Board = function (boardSize?: number) {
+  var randomTiles = [];
   this.tiles = [];
   this.cells = [];
-  var randomTiles = [];
 
+  this.size = boardSize || 2;
+  
   // Generating the Pair of tiles
-  for (var i = 1; i <= (Board.size * (Board.size / 2)); ++i) {
+  for (var i = 1; i <= ((this.size * this.size) / 2); ++i) {
     for (var ii = 0; ii < 2; ++ii) {
       var tile = this.addTile(i);
       randomTiles.push(tile);
@@ -77,11 +84,11 @@ var Board = function () {
   randomTiles = shuffle(randomTiles);
 
   // then adding them to each row
-  for (i = 0; i < Board.size; ++i) {
+  for (i = 0; i < this.size; ++i) {
     this.cells[i] = [];
     var row = this.cells[i];
 
-    for (ii = 0; ii < Board.size; ++ii) {
+    for (ii = 0; ii < this.size; ++ii) {
       var randTile = randomTiles.pop();
       row.push(randTile);
     }
@@ -94,8 +101,6 @@ Board.prototype.addTile = function () {
   this.tiles.push(res);
   return res;
 };
-
-Board.size = 4;
 
 Board.prototype.setLastTile = function(lastTile?: Object) {
   this.lastTile = lastTile;
