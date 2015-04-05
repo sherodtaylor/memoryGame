@@ -49,13 +49,10 @@ class Tile extends React.Component {
     this.state = {
       tile: props.tile
     };
-    props.tile.rerenderTile = this.rerenderTile.bind(this);
+    this.state.tile.rerenderTile = this.rerenderTile.bind(this);
   }
 
   rerenderTile(tile) {
-    tile.flipped = false;
-
-    console.log('rerenderTile:', tile)
     this.setState({
       tile: tile
     });
@@ -101,6 +98,7 @@ class Tile extends React.Component {
 
     this.textStyles = [
       styles.whiteText,
+      styles.hidden,
       styles.value
     ];
     return this.renderTile();
@@ -111,7 +109,7 @@ class Tile extends React.Component {
     return (
       <TouchableHighlight onPress={this.onTouch.bind(this)}
       activeOpacity={0.6}>
-        <View ref="this" style={this.tileStyles}>
+        <View style={this.tileStyles}>
           <Text style={this.textStyles}>{tile.value}</Text>
         </View>
       </TouchableHighlight>
@@ -175,10 +173,13 @@ class memoryGame extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Board>
-          {rows}
-        </Board>
-        <GameEndOverlay board={this.state.board} onRestart={() => this.restartGame()} />
+        <Text style={styles.header}>Memory Game</Text>
+        <View>
+          <Board>
+            {rows}
+          </Board>
+          <GameEndOverlay board={this.state.board} onRestart={() => this.restartGame()} />
+        </View>
       </View>
     );
   }
@@ -194,6 +195,12 @@ var styles = StyleSheet.create({
     padding: BOARD_PADDING,
     backgroundColor: '#bbaaaa',
     borderRadius: 5,
+  },
+  header: {
+    textAlign: 'center',
+    color: '#000',
+    backgroundColor: '#fff',
+    marginBottom: 20
   },
   overlay: {
     position: 'absolute',
@@ -235,6 +242,8 @@ var styles = StyleSheet.create({
     height: CELL_SIZE,
     backgroundColor: '#ddccbb',
     borderRadius: 5,
+    borderWidth: 2,
+    borderColor: '#afafaf',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -245,7 +254,7 @@ var styles = StyleSheet.create({
     fontWeight: '500',
   },
   flipped1: {
-    backgroundColor: '#f32435',
+    backgroundColor: '#f2f2f2',
   },
   flipped2: {
     backgroundColor: '#ffbb88',

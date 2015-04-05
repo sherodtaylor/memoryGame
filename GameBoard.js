@@ -14,7 +14,10 @@ var Tile = function (value?: number) {
 Tile.id = 0;
 
 Tile.prototype.isMatch = function (lastTile?: Object) {
-  return lastTile && lastTile.value && this.id !== lastTile.id ? lastTile.value === this.value : false;
+  if (!lastTile) {
+    return false;
+  }
+  return this.id !== lastTile.id && lastTile.value === this.value ? true : false;
 };
 
 Tile.prototype.match = function() {
@@ -29,9 +32,9 @@ Tile.prototype.flip = function (board?: Object) {
     return true;
   }
 
-  // console.log('lastTile', board.lastTile)
   board.setLastTile(this);
   this.flipped = true;
+  board.lastTile.flipped = true;
   return this.flipped;
 };
 
@@ -76,10 +79,8 @@ Board.prototype.resetFlippedTiles = function() {
   for (var i = 0; i < this.cells.length; i++) {
     var row = this.cells[i];
     for (var ii = 0; ii < row.length; ii++) {
-      var tile = row[i];
-      if (!tile.matched) {
-        tile.flipped = false;
-      }
+      var tile = row[i]
+      tile.flipped = false;
       tile.rerenderTile(tile);
     }
   }
