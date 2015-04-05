@@ -47,22 +47,18 @@ Tile.prototype.flip = function(board?: Object) {
 Tile.prototype.resetTile = function(board?: Object) {
   var tile = this;
   return setTimeout(function() {
+    if (tile.matched) {
+      return;
+    }
+
     tile.flipped = false;
 
     tile.componentRef.setState({
       tile: tile
     });
 
-    if (board.lastTile.id) {
-      board.lastTile.flipped = false;
-
-      board.lastTile.componentRef.setState({
-        tile: board.lastTile
-      });
-    }
-
     board.setLastTile({});
-  }, 1200);
+  }, 500);
 };
 
 var Board = function (level?: number) {
