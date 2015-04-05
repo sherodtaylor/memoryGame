@@ -57,7 +57,7 @@ var Board = function () {
   var randomTiles = [];
 
   // Generating the Pair of tiles
-  for (var i = 1; i <= (Board.size * 2); ++i) {
+  for (var i = 1; i <= (Board.size * (Board.size / 2)); ++i) {
     for (var ii = 0; ii < 2; ++ii) {
       var tile = this.addTile(i);
       randomTiles.push(tile);

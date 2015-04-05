@@ -86,14 +86,7 @@ class Tile extends React.Component {
       styles.value
     ];
 
-    return (
-      <TouchableHighlight onPress={this.onTouch.bind(this)}
-      activeOpacity={0.6}>
-        <View style={tileStyles}>
-          <Text style={textStyles}>{tile.value}</Text>
-        </View>
-      </TouchableHighlight>
-    );
+    return this.renderTile(tileStyles, textStyles);
   }
 
   renderInitial() {
@@ -109,6 +102,11 @@ class Tile extends React.Component {
       styles.value
     ];
 
+    return this.renderTile(tileStyles, textStyles);
+  }
+
+  renderTile(tileStyles, textStyles) {
+    var tile = this.state.tile;
     return (
       <TouchableHighlight onPress={this.onTouch.bind(this)}
       activeOpacity={0.6}>
