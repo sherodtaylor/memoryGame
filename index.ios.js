@@ -158,7 +158,7 @@ class memoryGame extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      board: new GameBoard(),
+      board: new GameBoard(1),
     };
     this.state.board.rerender = this.rerender.bind(this);
   }
@@ -169,9 +169,9 @@ class memoryGame extends React.Component {
   }
 
   toughEnough() {
-    var boardSize = this.state.board.size + 2;
+    var level = this.state.board.level + 1;
 
-    this.setState({board: new GameBoard(boardSize)});
+    this.setState({board: new GameBoard(level)});
 
     this.state.board.rerender = this.rerender.bind(this);
   }
@@ -191,7 +191,7 @@ class memoryGame extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.header}>Memory Game</Text>
+        <Text style={styles.level}>Level {board.level}</Text>
         <View>
           <Board>
             {rows}
@@ -214,12 +214,12 @@ var styles = StyleSheet.create({
     backgroundColor: '#bbaaaa',
     borderRadius: 5,
   },
-  header: {
+  level: {
     textAlign: 'center',
     color: '#000',
     backgroundColor: '#fff',
-    marginBottom: 20,
-    fontSize: 20
+    marginBottom: 15,
+    fontSize: 16
   },
   overlay: {
     position: 'absolute',

@@ -65,13 +65,14 @@ Tile.prototype.resetTile = function(board?: Object) {
   }, 1200);
 };
 
-var Board = function (boardSize?: number) {
+var Board = function (level?: number) {
   var randomTiles = [];
   this.tiles = [];
   this.cells = [];
 
-  this.size = boardSize || 2;
-  
+  this.level = level || 1;
+  this.size = this.level * 2;
+
   // Generating the Pair of tiles
   for (var i = 1; i <= ((this.size * this.size) / 2); ++i) {
     for (var ii = 0; ii < 2; ++ii) {
@@ -111,6 +112,7 @@ Board.prototype.hasWon = function() {
   var allMatched = true;
   for (var i = 0; i < this.cells.length; i++) {
     var row = this.cells[i];
+    console.log(row)
     for (var ii = 0; ii < row.length; ii++) {
       if (!row[i].matched) {
         allMatched = false;
