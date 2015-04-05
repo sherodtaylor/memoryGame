@@ -46,8 +46,6 @@ Tile.prototype.flip = function (board?: Object, tile?: Object) {
     tile.componentRef.setState({
       tile: tile
     });
-    console.log(tile.flipped)
-    console.log('resetting after 1 sec')
   }, 1000);
 
   return this.flipped;

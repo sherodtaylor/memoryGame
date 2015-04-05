@@ -109,7 +109,6 @@ class Tile extends React.Component {
       styles.value
     ];
 
-    console.log('I should be unflipped')
     return (
       <TouchableHighlight onPress={this.onTouch.bind(this)}
       activeOpacity={0.6}>
@@ -122,7 +121,6 @@ class Tile extends React.Component {
 
   render() {
     var tile = this.props.tile;
-    console.log(tile)
     if (tile.matched || tile.flipped) {
       return this.renderFlipped();
     }
