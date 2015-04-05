@@ -86,7 +86,7 @@ Board.prototype.addTile = function () {
   return res;
 };
 
-Board.size = 4;
+Board.size = 2;
 
 Board.prototype.setLastTile = function(lastTile?: Object) {
   this.lastTile = lastTile;

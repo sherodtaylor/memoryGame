@@ -15,6 +15,7 @@ var {
 
 var GameBoard = require('GameBoard');
 var TouchableHighlight = require('TouchableHighlight');
+var TouchableBounce = require('TouchableBounce');
 
 var BOARD_PADDING = 3;
 var CELL_MARGIN = 4;
@@ -52,13 +53,6 @@ class Tile extends React.Component {
     this.state.tile.componentRef = this;
   }
 
-  rerenderTile(tile) {
-    this.setState({
-      tile: tile
-    });
-    this.state.tile.rerenderTile = this.rerenderTile.bind(this);
-  }
-
   onTouch() {
     var board = this.props.board;
     var tile = this.props.tile;
@@ -69,7 +63,7 @@ class Tile extends React.Component {
     });
 
     if (board.hasWon()) {
-      board.openOverlay();
+      board.rerender();
     }
   }
 
@@ -132,13 +126,6 @@ class GameEndOverlay extends React.Component {
     this.state = {
       board: props.board
     };
-    this.state.board = this.openOverlay.bind(this);
-  }
-
-  openOverlay() {
-    this.setState({
-      board: this.state.board
-    })
   }
 
   render() {
@@ -169,14 +156,21 @@ class memoryGame extends React.Component {
     this.state = {
       board: new GameBoard(),
     };
+    this.state.board.rerender = this.rerender.bind(this);
   }
 
   restartGame() {
     this.setState({board: new GameBoard()});
+    this.state.board.rerender = this.rerender.bind(this);
+  }
+
+  rerender() {
+    this.setState({board: this.state.board});
   }
 
   render() {
     var board = this.state.board;
+
     var rows = this.state.board.cells.map((cell) => {
       return (
         <Row board={board} row={cell} />
@@ -190,7 +184,7 @@ class memoryGame extends React.Component {
           <Board>
             {rows}
           </Board>
-          <GameEndOverlay board={this.state.board} onRestart={() => this.restartGame()} />
+          <GameEndOverlay board={board} onRestart={() => this.restartGame()} />
         </View>
       </View>
     );
