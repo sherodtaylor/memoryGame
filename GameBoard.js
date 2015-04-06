@@ -25,8 +25,13 @@ Tile.prototype.match = function() {
 };
 
 Tile.prototype.flip = function(board?: Object) {
+  if (this.matched) {
+    return true;
+  }
+
   if (this.isMatch(board.lastTile)) {
     board.lastTile.match();
+
     this.match(); 
     return true;
   }
@@ -58,7 +63,7 @@ Tile.prototype.resetTile = function(board?: Object) {
     });
 
     board.setLastTile({});
-  }, 500);
+  }, 1000);
 };
 
 var Board = function (level?: number) {
@@ -66,7 +71,7 @@ var Board = function (level?: number) {
   this.tiles = [];
   this.cells = [];
 
-  this.level = level || 1;
+  this.level = level || Board.level++;
   this.size = this.level * 2;
 
   // Generating the Pair of tiles
@@ -92,6 +97,8 @@ var Board = function (level?: number) {
   }
 };
 
+Board.level = 1;
+
 Board.prototype.addTile = function () {
   var res = new Tile();
   Tile.apply(res, arguments);
@@ -110,7 +117,7 @@ Board.prototype.hasWon = function() {
     var row = this.cells[i];
     console.log(row)
     for (var ii = 0; ii < row.length; ii++) {
-      if (!row[i].matched) {
+      if (!row[ii].matched) {
         allMatched = false;
       }
     }

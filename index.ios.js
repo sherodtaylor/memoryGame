@@ -158,20 +158,19 @@ class memoryGame extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      board: new GameBoard(1),
+      board: new GameBoard(),
     };
     this.state.board.rerender = this.rerender.bind(this);
   }
 
   restartGame() {
-    this.setState({board: new GameBoard()});
+    var level = this.state.board.level;
+    this.setState({board: new GameBoard(level)});
     this.state.board.rerender = this.rerender.bind(this);
   }
 
   toughEnough() {
-    var level = this.state.board.level + 1;
-
-    this.setState({board: new GameBoard(level)});
+    this.setState({board: new GameBoard()});
 
     this.state.board.rerender = this.rerender.bind(this);
   }
