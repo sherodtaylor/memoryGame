@@ -115,7 +115,6 @@ Board.prototype.hasWon = function() {
   var allMatched = true;
   for (var i = 0; i < this.cells.length; i++) {
     var row = this.cells[i];
-    console.log(row)
     for (var ii = 0; ii < row.length; ii++) {
       if (!row[ii].matched) {
         allMatched = false;
