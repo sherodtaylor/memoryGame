@@ -139,14 +139,14 @@ class GameEndOverlay extends React.Component {
     return (
       <View style={styles.overlay}>
         <Text style={styles.overlayMessage}>Good Job!</Text>
-        <TouchableBounce onPress={this.props.onRestart}>
-          <View style={styles.tryAgain}>
-            <Text style={styles.tryAgainText}>Try Again?</Text>
-          </View>
-        </TouchableBounce>
         <TouchableBounce onPress={this.props.toughEnough}>
           <View style={styles.tryAgain}>
             <Text style={styles.tryAgainText}>Are you tough enough?</Text>
+          </View>
+        </TouchableBounce>
+        <TouchableBounce onPress={this.props.onRestart}>
+          <View style={styles.tryAgain}>
+            <Text style={styles.tryAgainText}>Try Again?</Text>
           </View>
         </TouchableBounce>
       </View>
